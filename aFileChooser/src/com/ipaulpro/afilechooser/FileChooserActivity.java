@@ -48,9 +48,10 @@ public class FileChooserActivity extends FragmentActivity implements
 		OnBackStackChangedListener {
 
     public static final String PATH = "path";
-	public static final String EXTERNAL_BASE_PATH = Environment
-			.getExternalStorageDirectory().getAbsolutePath();
-
+//	public static final String EXTERNAL_BASE_PATH = Environment
+//			.getExternalStorageDirectory().getAbsolutePath();
+	public static final String ROOT_PATH="/";
+	
 	private static final boolean HAS_ACTIONBAR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
 	private FragmentManager mFragmentManager;
@@ -67,14 +68,13 @@ public class FileChooserActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.chooser);
 
 		mFragmentManager = getSupportFragmentManager();
 		mFragmentManager.addOnBackStackChangedListener(this);
 
 		if (savedInstanceState == null) {
-			mPath = EXTERNAL_BASE_PATH;
+			mPath = ROOT_PATH;
 			addFragment();
 		} else {
 			mPath = savedInstanceState.getString(PATH);
@@ -112,7 +112,7 @@ public class FileChooserActivity extends FragmentActivity implements
             BackStackEntry fragment = mFragmentManager.getBackStackEntryAt(count - 1);
             mPath = fragment.getName();
 		} else {
-		    mPath = EXTERNAL_BASE_PATH;
+		    mPath = ROOT_PATH;
 		}
 		
 		setTitle(mPath);
