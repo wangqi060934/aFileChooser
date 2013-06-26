@@ -27,6 +27,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -80,25 +81,33 @@ public class FileListFragment extends ListFragment implements
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 		setEmptyText(getString(R.string.empty_directory));
 		setListAdapter(mAdapter);
 		setListShown(false);
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 		
-		super.onActivityCreated(savedInstanceState);
+		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+					int position, long arg3) {
+					File file = (File) mAdapter.getItem(position);
+					((FileChooserActivity) getActivity()).onFileOrDirSelected(file);
+				return true;
+			}
+		});
+		
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		FileListAdapter adapter = (FileListAdapter) l.getAdapter();
-		if (adapter != null) {
-			File file = (File) adapter.getItem(position);
+			File file = (File) mAdapter.getItem(position);
 			mPath = file.getAbsolutePath();
 			((FileChooserActivity) getActivity()).onFileSelected(file);
-		}
 	}
-
+	
 	@Override
 	public Loader<List<File>> onCreateLoader(int id, Bundle args) {
 		return new FileLoader(getActivity(), mPath);

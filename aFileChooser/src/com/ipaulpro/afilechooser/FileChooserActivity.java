@@ -194,10 +194,19 @@ public class FileChooserActivity extends FragmentActivity implements
 			if (file.isDirectory()) {
 				replaceFragment(file);
 			} else {
-				finishWithResult(file);	
+//				finishWithResult(file);	
 			}
 		} else {
 			Toast.makeText(FileChooserActivity.this, R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	protected void onFileOrDirSelected(File file) {
+		if (file != null) {
+			finishWithResult(file);
+		} else {
+			Toast.makeText(FileChooserActivity.this,
+					R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
 		}
 	}
 	

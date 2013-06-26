@@ -83,7 +83,7 @@ public class FileChooserExampleActivity extends Activity {
 						// Create a file instance from the URI
 						final File file = FileUtils.getFile(uri);
 						Toast.makeText(FileChooserExampleActivity.this, 
-								"File Selected: "+file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+								(file.isFile()?"File ":"Directory ")+"Selected: "+file.getAbsolutePath(), Toast.LENGTH_LONG).show();
 					} catch (Exception e) {
 						Log.e("FileSelectorTestActivity", "File select error", e);
 					}
