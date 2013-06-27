@@ -88,24 +88,26 @@ public class FileListFragment extends ListFragment implements
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 		
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> adapterView, View view,
-					int position, long arg3) {
-					File file = (File) mAdapter.getItem(position);
-					((FileChooserActivity) getActivity()).onFileOrDirSelected(file);
-				return true;
-			}
-		});
+//		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+//					int position, long arg3) {
+//					File file = (File) mAdapter.getItem(position);
+//					((FileChooserActivity) getActivity()).onFileOrDirSelected(file);
+//				return true;
+//			}
+//		});
 		
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-			File file = (File) mAdapter.getItem(position);
+		File file = (File) mAdapter.getItem(position);
+		if (file.isDirectory()) {
 			mPath = file.getAbsolutePath();
 			((FileChooserActivity) getActivity()).onFileSelected(file);
+		}
 	}
 	
 	@Override

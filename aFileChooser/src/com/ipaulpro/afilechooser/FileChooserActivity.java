@@ -16,25 +16,24 @@
 
 package com.ipaulpro.afilechooser;
 
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.io.File;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Main Activity that handles the FileListFragments 
@@ -44,7 +43,7 @@ import java.io.File;
  * @author paulburke (ipaulpro)
  * 
  */
-public class FileChooserActivity extends FragmentActivity implements
+public class FileChooserActivity extends SherlockFragmentActivity implements
 		OnBackStackChangedListener {
 
     public static final String PATH = "path";
@@ -52,8 +51,6 @@ public class FileChooserActivity extends FragmentActivity implements
 //			.getExternalStorageDirectory().getAbsolutePath();
 	public static final String ROOT_PATH="/";
 	
-	private static final boolean HAS_ACTIONBAR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-
 	private FragmentManager mFragmentManager;
 	private BroadcastReceiver mStorageListener = new BroadcastReceiver() {
 		@Override
@@ -69,7 +66,11 @@ public class FileChooserActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chooser);
-
+		
+		ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+		
 		mFragmentManager = getSupportFragmentManager();
 		mFragmentManager.addOnBackStackChangedListener(this);
 
@@ -116,29 +117,30 @@ public class FileChooserActivity extends FragmentActivity implements
 		}
 		
 		setTitle(mPath);
-		if (HAS_ACTIONBAR) invalidateOptionsMenu();
+		supportInvalidateOptionsMenu();
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-        if (HAS_ACTIONBAR) {
-            boolean hasBackStack = mFragmentManager.getBackStackEntryCount() > 0;
-            
-            ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(hasBackStack);
-            actionBar.setHomeButtonEnabled(hasBackStack);
-        }
-	    
+		menu.add(0, R.id.menu_ok, 0, "OK").setIcon(R.drawable.abs__ic_cab_done_holo_light)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		
 	    return true;
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	        case android.R.id.home:
-	            mFragmentManager.popBackStack();
-	            return true;
-	    }
+		int itemId=item.getItemId();
+		if(itemId==android.R.id.home){
+			if(mFragmentManager.getBackStackEntryCount()==0){
+        		setResult(RESULT_CANCELED);
+        		finish();
+        	}
+            mFragmentManager.popBackStack();
+            return true;
+		}else if (itemId==R.id.menu_ok) {
+			finishWithResult(new File(mPath));
+		}
 
 	    return super.onOptionsItemSelected(item);
 	}
@@ -194,21 +196,25 @@ public class FileChooserActivity extends FragmentActivity implements
 			if (file.isDirectory()) {
 				replaceFragment(file);
 			} else {
-//				finishWithResult(file);	
+				finishWithResult(file);	
 			}
 		} else {
 			Toast.makeText(FileChooserActivity.this, R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
 		}
 	}
 	
-	protected void onFileOrDirSelected(File file) {
-		if (file != null) {
-			finishWithResult(file);
-		} else {
-			Toast.makeText(FileChooserActivity.this,
-					R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
-		}
-	}
+//	protected void onDirSelected(File file) {
+//				replaceFragment(file);
+//	}
+//	
+//	protected void onFileOrDirSelected(File file) {
+//		if (file != null) {
+//			finishWithResult(file);
+//		} else {
+//			Toast.makeText(FileChooserActivity.this,
+//					R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
+//		}
+//	}
 	
 	/**
 	 * Register the external storage BroadcastReceiver.
