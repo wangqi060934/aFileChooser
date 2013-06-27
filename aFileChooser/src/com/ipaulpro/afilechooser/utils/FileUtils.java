@@ -19,11 +19,13 @@ package com.ipaulpro.afilechooser.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URISyntaxException;
+import java.text.Collator;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -56,6 +58,24 @@ public class FileUtils {
 	public static final String MIME_TYPE_VIDEO = "video/*"; 
 	public static final String MIME_TYPE_APP = "application/*";
 
+	public static int selectMode;
+	public static final int MODE_SELECT_DEFAULT=0;
+	public static final int MODE_SELECT_FILE=1;
+	public static final int MODE_SELECT_DIR=2;
+	
+	public static void setSelectMode(int selectMode){
+		switch (selectMode) {
+		case MODE_SELECT_FILE:
+			selectMode=MODE_SELECT_FILE;
+			break;
+		case MODE_SELECT_DIR:
+			selectMode=MODE_SELECT_DIR;
+			break;
+		default:
+			selectMode=MODE_SELECT_DEFAULT;
+			break;
+		}
+	}
 	/**
 	 * Whether the filename is a video file.
 	 * 
@@ -401,9 +421,8 @@ public class FileUtils {
 	 */
 	private static Comparator<File> mComparator = new Comparator<File>() {
 		public int compare(File f1, File f2) {
-			// Sort alphabetically by lower case, which is much cleaner
-			return f1.getName().toLowerCase().compareTo(
-					f2.getName().toLowerCase());
+			return Collator.getInstance(Locale.getDefault()).compare(
+					f1.getName(), f2.getName());
 		}
 	};
 	

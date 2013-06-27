@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
- */ 
+ */
 
 package com.ipaulpro.afilechooser;
 
@@ -34,9 +34,10 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.ipaulpro.afilechooser.utils.FileUtils;
 
 /**
- * Main Activity that handles the FileListFragments 
+ * Main Activity that handles the FileListFragments
  * 
  * @version 2013-06-25
  * 
@@ -46,31 +47,32 @@ import com.actionbarsherlock.view.MenuItem;
 public class FileChooserActivity extends SherlockFragmentActivity implements
 		OnBackStackChangedListener {
 
-    public static final String PATH = "path";
-//	public static final String EXTERNAL_BASE_PATH = Environment
-//			.getExternalStorageDirectory().getAbsolutePath();
-	public static final String ROOT_PATH="/";
-	
+	public static final String PATH = "path";
+	// public static final String EXTERNAL_BASE_PATH = Environment
+	// .getExternalStorageDirectory().getAbsolutePath();
+	public static final String ROOT_PATH = "/";
+
 	private FragmentManager mFragmentManager;
 	private BroadcastReceiver mStorageListener = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Toast.makeText(context, R.string.storage_removed, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.storage_removed, Toast.LENGTH_LONG)
+					.show();
 			finishWithResult(null);
 		}
 	};
-	
+
 	private String mPath;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chooser);
-		
+
 		ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-		
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
+
 		mFragmentManager = getSupportFragmentManager();
 		mFragmentManager.addOnBackStackChangedListener(this);
 
@@ -87,62 +89,65 @@ public class FileChooserActivity extends SherlockFragmentActivity implements
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
+
 		unregisterStorageListener();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		registerStorageListener();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		outState.putString(PATH, mPath);
 	}
 
 	@Override
 	public void onBackStackChanged() {
-		
+
 		int count = mFragmentManager.getBackStackEntryCount();
 		if (count > 0) {
-            BackStackEntry fragment = mFragmentManager.getBackStackEntryAt(count - 1);
-            mPath = fragment.getName();
+			BackStackEntry fragment = mFragmentManager
+					.getBackStackEntryAt(count - 1);
+			mPath = fragment.getName();
 		} else {
-		    mPath = ROOT_PATH;
+			mPath = ROOT_PATH;
 		}
-		
+
 		setTitle(mPath);
 		supportInvalidateOptionsMenu();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, R.id.menu_ok, 0, "OK").setIcon(R.drawable.abs__ic_cab_done_holo_light)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		
-	    return true;
+		menu.add(0, R.id.menu_ok, 0, "select current directory")
+				.setIcon(R.drawable.abs__ic_cab_done_holo_light)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int itemId=item.getItemId();
-		if(itemId==android.R.id.home){
-			if(mFragmentManager.getBackStackEntryCount()==0){
-        		setResult(RESULT_CANCELED);
-        		finish();
-        	}
-            mFragmentManager.popBackStack();
-            return true;
-		}else if (itemId==R.id.menu_ok) {
+		int itemId = item.getItemId();
+		if (itemId == android.R.id.home) {
+			if (mFragmentManager.getBackStackEntryCount() == 0) {
+				setResult(RESULT_CANCELED);
+				finish();
+			}
+			mFragmentManager.popBackStack();
+			return true;
+		} else if (itemId == R.id.menu_ok
+				&& FileUtils.selectMode != FileUtils.MODE_SELECT_FILE) {
 			finishWithResult(new File(mPath));
 		}
 
-	    return super.onOptionsItemSelected(item);
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -155,15 +160,16 @@ public class FileChooserActivity extends SherlockFragmentActivity implements
 	}
 
 	/**
-	 * "Replace" the existing Fragment with a new one using given path.
-	 * We're really adding a Fragment to the back stack.
+	 * "Replace" the existing Fragment with a new one using given path. We're
+	 * really adding a Fragment to the back stack.
 	 * 
-	 * @param file The file (directory) to display.
+	 * @param file
+	 *            The file (directory) to display.
 	 */
 	private void replaceFragment(File file) {
-        mPath = file.getAbsolutePath();
+		mPath = file.getAbsolutePath();
 
-        FileListFragment fragment = FileListFragment.newInstance(mPath);
+		FileListFragment fragment = FileListFragment.newInstance(mPath);
 		mFragmentManager.beginTransaction()
 				.replace(R.id.explorer_fragment, fragment)
 				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -173,7 +179,8 @@ public class FileChooserActivity extends SherlockFragmentActivity implements
 	/**
 	 * Finish this Activity with a result code and URI of the selected file.
 	 * 
-	 * @param file The file selected.
+	 * @param file
+	 *            The file selected.
 	 */
 	private void finishWithResult(File file) {
 		if (file != null) {
@@ -181,41 +188,43 @@ public class FileChooserActivity extends SherlockFragmentActivity implements
 			setResult(RESULT_OK, new Intent().setData(uri));
 			finish();
 		} else {
-			setResult(RESULT_CANCELED);	
+			setResult(RESULT_CANCELED);
 			finish();
 		}
 	}
-	
+
 	/**
 	 * Called when the user selects a File
 	 * 
-	 * @param file The file that was selected
+	 * @param file
+	 *            The file that was selected
 	 */
 	protected void onFileSelected(File file) {
 		if (file != null) {
 			if (file.isDirectory()) {
 				replaceFragment(file);
-			} else {
-				finishWithResult(file);	
+			} else if (FileUtils.selectMode != FileUtils.MODE_SELECT_DIR) {
+				finishWithResult(file);
 			}
 		} else {
-			Toast.makeText(FileChooserActivity.this, R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
+			Toast.makeText(FileChooserActivity.this,
+					R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-//	protected void onDirSelected(File file) {
-//				replaceFragment(file);
-//	}
-//	
-//	protected void onFileOrDirSelected(File file) {
-//		if (file != null) {
-//			finishWithResult(file);
-//		} else {
-//			Toast.makeText(FileChooserActivity.this,
-//					R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
-//		}
-//	}
-	
+
+	// protected void onDirSelected(File file) {
+	// replaceFragment(file);
+	// }
+	//
+	// protected void onFileOrDirSelected(File file) {
+	// if (file != null) {
+	// finishWithResult(file);
+	// } else {
+	// Toast.makeText(FileChooserActivity.this,
+	// R.string.error_selecting_file, Toast.LENGTH_SHORT).show();
+	// }
+	// }
+
 	/**
 	 * Register the external storage BroadcastReceiver.
 	 */

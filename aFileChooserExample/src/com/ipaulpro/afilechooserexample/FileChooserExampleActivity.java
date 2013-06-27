@@ -57,6 +57,8 @@ public class FileChooserExampleActivity extends Activity {
 	}
 	
 	private void showChooser() {
+		FileUtils.setSelectMode(FileUtils.MODE_SELECT_DIR);
+		
 		// Use the GET_CONTENT intent from the utility class
 		Intent target = FileUtils.createGetContentIntent();
 		// Create the chooser Intent
