@@ -26,8 +26,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.ipaulpro.afilechooser.utils.FileUtils;
 
@@ -42,8 +41,10 @@ public class FileChooserExampleActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// Create a simple button to start the file chooser process
-		Button button = new Button(this);
+
+		setContentView(R.layout.main_layout);
+
+        Button button= (Button) findViewById(R.id.select);
 		button.setText(R.string.choose_file);
 		button.setOnClickListener(new OnClickListener() {
 			@Override
@@ -52,18 +53,33 @@ public class FileChooserExampleActivity extends Activity {
 				showChooser();
 			}
 		});
-		
-		setContentView(button);
+
+        RadioGroup group= (RadioGroup) findViewById(R.id.set_group);
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i){
+                    case R.id.select_file:
+                        FileUtils.setSelectMode(FileUtils.MODE_SELECT_FILE);
+                        break;
+                    case R.id.select_dir:
+                        FileUtils.setSelectMode(FileUtils.MODE_SELECT_DIR);
+                        break;
+                    default:
+                        FileUtils.setSelectMode(FileUtils.MODE_SELECT_DEFAULT);
+                        break;
+                }
+            }
+        });
 	}
 	
 	private void showChooser() {
-		FileUtils.setSelectMode(FileUtils.MODE_SELECT_DIR);
-		
+
 		// Use the GET_CONTENT intent from the utility class
 		Intent target = FileUtils.createGetContentIntent();
 		// Create the chooser Intent
 		Intent intent = Intent.createChooser(
-				target, getString(R.string.chooser_title));
+				target, getString(R.string.choose_file));
 		try {
 			startActivityForResult(intent, REQUEST_CODE);
 		} catch (ActivityNotFoundException e) {

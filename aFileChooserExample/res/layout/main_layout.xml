@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <RadioGroup android:id="@+id/set_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+    <RadioButton
+            android:id="@+id/select_all"
+            android:text="@string/select_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"/>
+    <RadioButton
+            android:id="@+id/select_file"
+            android:text="@string/select_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    <RadioButton
+            android:id="@+id/select_dir"
+            android:text="@string/select_directory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RadioGroup>
+    <Button
+            android:id="@+id/select"
+            android:text="@string/choose_file"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"/>
+
+</LinearLayout>

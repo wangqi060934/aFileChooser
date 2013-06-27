@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
- */ 
+ */
 
 package com.ipaulpro.afilechooser;
 
@@ -41,11 +41,11 @@ import com.ipaulpro.afilechooser.utils.FileUtils;
 
 /**
  * Fragment that displays a list of Files in a given path.
- * 
+ *
  * @version 2012-10-28
- * 
+ *
  * @author paulburke (ipaulpro)
- * 
+ *
  */
 public class FileListFragment extends ListFragment implements
 		LoaderManager.LoaderCallbacks<List<File>> {
@@ -57,9 +57,9 @@ public class FileListFragment extends ListFragment implements
 
 	/**
 	 * Create a new instance with the given file path.
-	 * 
+	 *
 	 * @param path The absolute path of the file (directory) to display.
-	 * @return A new Fragment with the given file path. 
+	 * @return A new Fragment with the given file path.
 	 */
 	public static FileListFragment newInstance(String path) {
 		FileListFragment fragment = new FileListFragment();
@@ -87,7 +87,7 @@ public class FileListFragment extends ListFragment implements
 		setListShown(false);
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
-		
+
 //		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 //
 //			@Override
@@ -98,18 +98,16 @@ public class FileListFragment extends ListFragment implements
 //				return true;
 //			}
 //		});
-		
+
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		File file = (File) mAdapter.getItem(position);
-		if (file.isDirectory()) {
-			mPath = file.getAbsolutePath();
-			((FileChooserActivity) getActivity()).onFileSelected(file);
-		}
-	}
-	
+        File file = (File) mAdapter.getItem(position);
+        mPath = file.getAbsolutePath();
+        ((FileChooserActivity) getActivity()).onFileSelected(file);
+    }
+
 	@Override
 	public Loader<List<File>> onCreateLoader(int id, Bundle args) {
 		return new FileLoader(getActivity(), mPath);
@@ -129,16 +127,16 @@ public class FileListFragment extends ListFragment implements
 	public void onLoaderReset(Loader<List<File>> loader) {
 		mAdapter.clear();
 	}
-	
+
 	private static class FileLoader extends AsyncTaskLoader<List<File>> {
 
 		private static final int FILE_OBSERVER_MASK = FileObserver.CREATE
 				| FileObserver.DELETE | FileObserver.DELETE_SELF
 				| FileObserver.MOVED_FROM | FileObserver.MOVED_TO
 				| FileObserver.MODIFY | FileObserver.MOVE_SELF;
-		
+
 		private FileObserver mFileObserver;
-		
+
 		private List<File> mData;
 		private String mPath;
 
@@ -161,7 +159,7 @@ public class FileListFragment extends ListFragment implements
 
 			List<File> oldData = mData;
 			mData = data;
-			
+
 			if (isStarted())
 				super.deliverResult(data);
 
@@ -178,12 +176,12 @@ public class FileListFragment extends ListFragment implements
 				mFileObserver = new FileObserver(mPath, FILE_OBSERVER_MASK) {
 					@Override
 					public void onEvent(int event, String path) {
-						onContentChanged();	
+						onContentChanged();
 					}
 				};
 			}
 			mFileObserver.startWatching();
-			
+
 			if (takeContentChanged() || mData == null)
 				forceLoad();
 		}
@@ -211,14 +209,14 @@ public class FileListFragment extends ListFragment implements
 		}
 
 		protected void onReleaseResources(List<File> data) {
-			
+
 			if (mFileObserver != null) {
 				mFileObserver.stopWatching();
 				mFileObserver = null;
 			}
 		}
 	}
-	
+
 	private class FileListAdapter extends BaseAdapter {
 
 		private List<File> mFiles = new ArrayList<File>();

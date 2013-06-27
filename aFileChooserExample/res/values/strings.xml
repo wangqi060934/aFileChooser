@@ -17,5 +17,7 @@
 <resources>
 
     <string name="app_name">aFileChooserExample</string>
-    <string name="chooser_title">Lorem ipsum</string>
+    <string name="select_all">Default: file/directory</string>
+    <string name="select_file">Select: file only</string>
+    <string name="select_directory">Select: directory only</string>
 </resources>

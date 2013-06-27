@@ -63,8 +63,8 @@ public class FileUtils {
 	public static final int MODE_SELECT_FILE=1;
 	public static final int MODE_SELECT_DIR=2;
 	
-	public static void setSelectMode(int selectMode){
-		switch (selectMode) {
+	public static void setSelectMode(int mode){
+		switch (mode) {
 		case MODE_SELECT_FILE:
 			selectMode=MODE_SELECT_FILE;
 			break;

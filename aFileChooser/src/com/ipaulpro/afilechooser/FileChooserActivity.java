@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -144,7 +145,8 @@ public class FileChooserActivity extends SherlockFragmentActivity implements
 			return true;
 		} else if (itemId == R.id.menu_ok
 				&& FileUtils.selectMode != FileUtils.MODE_SELECT_FILE) {
-			finishWithResult(new File(mPath));
+            finishWithResult(new File(mPath));
+            return true;
 		}
 
 		return super.onOptionsItemSelected(item);
