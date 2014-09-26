@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/menu_ok"
+        android:icon="@drawable/abc_ic_cab_done_holo_light"
+        android:title="@string/choose_current_directory"
+        yourapp:showAsAction="always"/>
+
+</menu>

@@ -26,15 +26,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.io.File;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.ipaulpro.afilechooser.utils.FileUtils;
 
 /**
@@ -45,7 +44,7 @@ import com.ipaulpro.afilechooser.utils.FileUtils;
  * @author paulburke (ipaulpro)
  * 
  */
-public class FileChooserActivity extends SherlockFragmentActivity implements
+public class FileChooserActivity extends ActionBarActivity implements
 		OnBackStackChangedListener {
 
 	public static final String PATH = "path";
@@ -126,13 +125,11 @@ public class FileChooserActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, R.id.menu_ok, 0, "select current directory")
-				.setIcon(R.drawable.abs__ic_cab_done_holo_light)
-				.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
+		getMenuInflater().inflate(R.menu.choose, menu);
 		return true;
 	}
 
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int itemId = item.getItemId();
